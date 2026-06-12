@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan Your Visit — Historical Conversations: Cape Cod</title>
+<link rel="stylesheet" href="style.css">
+<script src="data.js"></script><script src="app.js"></script>
+</head>
+<body>
+<div id="hc-header" data-active="Plan Your Visit"></div>
+
+<section class="band">
+  <div class="wrap">
+    <p class="kicker">Visitor Guides</p>
+    <h1>Plan Your Visit</h1>
+    <p class="text" style="margin-top:16px">Every episode ends where it began: a real place you can stand. These town guides pair the figures with the sites — real directions, real coordinates, not a brochure.</p>
+    <div id="towns"></div>
+  </div>
+</section>
+
+<div id="hc-footer"></div>
+
+<script>
+const GUIDES=[
+  {town:"Wellfleet & South Wellfleet", region:"Outer Cape",
+   text:"Start at the Marconi Station Site (Cape Cod National Seashore, free admission) — stand at the observation deck and look east at three thousand miles of open Atlantic. Walk south to Marconi Beach and face the surf: five hundred feet out is where the pirate ship Whydah broke apart in 1717. One bluff, two centuries, two stories."},
+  {town:"Eastham", region:"Outer Cape",
+   text:"Park at Nauset Light Beach and walk south along the stretch Thoreau described most vividly. The Penniman House with its whale jaw-bone gate is minutes away (NPS, seasonal). The Salt Pond Visitor Center has maps and exhibits for the whole outer beach."},
+  {town:"Provincetown", region:"Outer Cape",
+   text:"The Province Lands Visitor Center observation deck shows you close to what Gosnold saw in 1602. In town: the sites of the Provincetown Players' wharf theater where O'Neill began, Hawthorne's art school legacy at PAAM, and Stanley Kunitz's garden on Commercial Street."},
+  {town:"Barnstable & West Barnstable", region:"Mid Cape",
+   text:"The bronze statue of Mercy Otis Warren stands outside the Barnstable County Courthouse on Route 6A; James Otis Jr., her brother, stands nearby. The Sturgis Library down the road holds Otis family materials — one of the oldest library buildings in America."},
+  {town:"Brewster", region:"Lower Cape",
+   text:"Thoreau's first stagecoach stop, and home of Nickerson State Park — Massachusetts' first state park, born from the Nickerson family's grief. The Cape Cod Museum of Natural History covers the pre-Pilgrim Cape."},
+  {town:"Woods Hole & Falmouth", region:"Upper Cape",
+   text:"The Marine Biological Laboratory drew Nobel laureates summer after summer — Szent-Györgyi, Loewi — and shaped Rachel Carson's science. In Falmouth village, Katharine Lee Bates' birthplace still stands a short walk from the green."}
+];
+document.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("towns").innerHTML=GUIDES.map(g=>{
+    const figs=HC.figures.filter(f=>f.town.includes(g.town.split(" &")[0].split(",")[0]));
+    const names=figs.map(f=>f.ep&&HC.episodes[f.ep]?`<a href="episode.html?ep=${f.ep}">${f.name}</a>`:f.name).join(" · ");
+    return `<div class="town-block"><h3>${g.town}</h3>
+      <div class="figs"><span class="pill">${g.region}</span> &nbsp; ${names}</div>
+      <p>${g.text}</p></div>`;
+  }).join("");
+});
+</script>
+</body>
+</html>
+
