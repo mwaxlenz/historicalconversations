@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Episode — Historical Conversations: Cape Cod</title>
+<link rel="stylesheet" href="style.css">
+<script src="data.js"></script><script src="app.js"></script>
+</head>
+<body>
+<div id="hc-header" data-active="Episodes"></div>
+
+<div class="wrap">
+  <div class="ep-header">
+    <p class="kicker" id="z-kicker">Episode</p>
+    <h1 id="z-title"></h1>
+    <div class="ep-meta" id="z-meta"></div>
+  </div>
+
+  <div id="z-player-slot"></div>
+
+  <blockquote class="pullquote" id="z-quote"></blockquote>
+  <div class="attr" id="z-attr"></div>
+
+  <div class="prose">
+    <div id="z-notes"></div>
+    <div id="z-image"></div>
+    <h2>Walk in their footsteps</h2>
+    <p id="z-footsteps"></p>
+    <h2>Resources</h2>
+    <ul class="res-list" id="z-resources"></ul>
+  </div>
+
+  <div class="cta-box">
+    <h3 id="z-cta-title"></h3>
+    <p id="z-cta-text"></p>
+    <form class="signup" onsubmit="event.preventDefault();this.innerHTML='<p style=\'color:var(--hc-marsh);font-weight:600\'>Thank you — check your inbox.</p>'">
+      <input type="email" required placeholder="Your email address">
+      <button class="btn" type="submit">Get the bonus</button>
+    </form>
+  </div>
+
+  <p style="margin:40px 0"><a href="episodes.html">← All episodes</a> · <a href="map.html">See this episode on the map →</a></p>
+</div>
+
+<div id="hc-footer"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const id=new URLSearchParams(location.search).get("ep")||"EP-01";
+  const e=HC.episodes[id];
+  if(!e){location.href="episodes.html";return;}
+  document.title=e.title+" — Historical Conversations";
+  document.getElementById("z-kicker").textContent=id.replace("-"," ");
+  document.getElementById("z-title").textContent=e.title;
+  document.getElementById("z-meta").textContent=e.meta;
+
+  // Player: real Buzzsprout embed when IDs are set and the episode is published; placeholder otherwise
+  const bz=HC.buzzsprout||{}, bzEp=bz.ids&&bz.ids[id];
+  const slot=document.getElementById("z-player-slot");
+  if(bz.podcastId && bzEp && bzEp.id){
+    slot.innerHTML=`<div style="margin:36px 0" id="buzzsprout-player-${bzEp.id}"></div>`;
+    const s=document.createElement("script");
+    s.src=`https://www.buzzsprout.com/${bz.podcastId}/episodes/${bzEp.id}-${bzEp.slug}.js?container_id=buzzsprout-player-${bzEp.id}&player=small`;
+    s.async=true; slot.appendChild(s);
+  }else{
+    slot.innerHTML=`<div class="player"><div class="pbtn">▶</div><div><strong>${e.title}</strong>
+      <div class="note">Buzzsprout player embeds here automatically once the episode is published.</div></div></div>`;
+  }
+  document.getElementById("z-quote").textContent="“"+e.pullQuote+"”";
+  document.getElementById("z-attr").textContent=e.attribution;
+  document.getElementById("z-notes").innerHTML=e.showNotes.map(p=>`<p>${p}</p>`).join("");
+  if(e.image) document.getElementById("z-image").innerHTML=`<img src="${e.image}" alt="${e.title} infographic" style="margin:30px 0;border:1px solid var(--hc-border)">`;
+  document.getElementById("z-footsteps").textContent=e.footsteps;
+  document.getElementById("z-resources").innerHTML=e.resources.map(([t,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join("");
+  document.getElementById("z-cta-title").textContent=e.cta.title;
+  document.getElementById("z-cta-text").textContent=e.cta.text;
+});
+</script>
+</body>
+</html>
+
