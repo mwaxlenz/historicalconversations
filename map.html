@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Map — Historical Conversations: Cape Cod</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+<script src="data.js"></script><script src="app.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+<div id="hc-header" data-active="The Map"></div>
+
+<section class="band">
+  <div class="wrap">
+    <p class="kicker">Where It Happened</p>
+    <h1>The Map</h1>
+    <p class="text" style="margin-top:16px">Every figure is anchored to a real place you can stand. Click a pin to meet them. Green pins have episodes you can listen to now.</p>
+    <div id="map"></div>
+    <p class="count" style="margin-top:14px">This interactive map wasn't possible on the Squarespace basic plan — it's built in from day one here.</p>
+  </div>
+</section>
+
+<div id="hc-footer"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const map=L.map("map").setView([41.78,-70.15],10);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    {attribution:"© OpenStreetMap · © CARTO",maxZoom:18}).addTo(map);
+
+  const mk=(color)=>L.divIcon({className:"",html:
+    `<svg width="26" height="38" viewBox="0 0 26 38"><path d="M13 0C5.8 0 0 5.8 0 13c0 9.7 13 25 13 25s13-15.3 13-25C26 5.8 20.2 0 13 0z" fill="${color}"/><circle cx="13" cy="13" r="5" fill="#F7F5F0"/></svg>`,
+    iconSize:[26,38],iconAnchor:[13,38],popupAnchor:[0,-34]});
+  const green=mk("#4A6741"), sky=mk("#7B9BAD"), sand=mk("#C4A882");
+
+  // group figures by identical coordinates to offset overlapping pins slightly
+  const seen={};
+  HC.figures.forEach(f=>{
+    const key=f.lat+","+f.lng;
+    const n=(seen[key]=(seen[key]||0)+1)-1;
+    const lat=f.lat+n*0.008, lng=f.lng+n*0.008;
+    const e=f.ep?HC.episodes[f.ep]:null;
+    const icon=f.status==="published"?green:(f.status==="in-production"||f.status==="planned")?sky:sand;
+    const link=e?`<a href="episode.html?ep=${f.ep}"><strong>Listen to ${f.ep} →</strong></a>`:`<em>${statusLabel(f.status)}</em>`;
+    L.marker([lat,lng],{icon}).addTo(map).bindPopup(
+      `<div class="popup"><h4>${f.name}</h4><div class="pm">${f.dates} · ${f.town}</div><p style="margin-bottom:6px">${f.hook}</p>${link}</div>`);
+  });
+});
+</script>
+</body>
+</html>
+
