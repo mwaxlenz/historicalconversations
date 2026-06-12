@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Figures — Historical Conversations: Cape Cod</title>
+<link rel="stylesheet" href="style.css">
+<script src="data.js"></script><script src="app.js"></script>
+</head>
+<body>
+<div id="hc-header" data-active="The Figures"></div>
+
+<section class="band">
+  <div class="wrap">
+    <p class="kicker">The Full Roster</p>
+    <h1>The Figures</h1>
+    <p class="text" style="margin-top:16px">Forty-five lives across a thousand years, in nine chapters of Cape Cod's story. Published figures link to their episodes; the rest are the promise of what's coming. The four figures of the Indigenous World are held in consultation with the Mashpee Wampanoag cultural department — they will speak when it's done right.</p>
+
+    <div class="filters" id="cat-filters"></div>
+    <div class="filters" id="era-filters" style="margin-top:10px"></div>
+    <p class="count" id="count"></p>
+    <div class="fig-grid" id="grid"></div>
+  </div>
+</section>
+
+<div id="hc-footer"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  let cat="all", era="all";
+  const eras=[["all","All eras"],["1600s","1600s & before"],["1700s","1700s"],["1800s","1800s"],["1900s","1900s–today"]];
+  const catBar=document.getElementById("cat-filters");
+  catBar.innerHTML=`<button class="on" data-v="all">All categories</button>`+HC.categories.map(c=>`<button data-v="${c}">${c}</button>`).join("");
+  const eraBar=document.getElementById("era-filters");
+  eraBar.innerHTML=eras.map(([v,l],i)=>`<button class="${i===0?'on':''}" data-v="${v}">${l}</button>`).join("");
+
+  const render=()=>{
+    const list=HC.figures.filter(f=>(cat==="all"||f.category===cat)&&(era==="all"||f.century===era));
+    document.getElementById("grid").innerHTML=list.map(figCard).join("");
+    document.getElementById("count").textContent=`${list.length} of ${HC.figures.length} figures`;
+  };
+  const wire=(bar,set)=>bar.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    bar.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); set(b.dataset.v); render();
+  });
+  wire(catBar,v=>cat=v); wire(eraBar,v=>era=v);
+  render();
+});
+</script>
+</body>
+</html>
+
