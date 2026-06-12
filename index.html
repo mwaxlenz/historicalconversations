@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Historical Conversations — Cape Cod | The past has things to say.</title>
+<meta name="description" content="AI-voiced dramatized interviews with the historical figures of Cape Cod. Hear Thoreau, Marconi, Black Sam Bellamy, and more speak for themselves.">
+<link rel="stylesheet" href="style.css">
+<script src="data.js"></script>
+<script src="app.js"></script>
+</head>
+<body>
+<div id="hc-header" data-active="Home"></div>
+
+<div class="hero">
+  <div class="inner">
+    <div>
+      <p class="tag">The past has things to say.</p>
+      <h1>Hear Cape Cod's history speak for itself.</h1>
+      <p class="sub">Dramatized interviews with the figures who made this peninsula — pirates and poets, sachems and scientists. Each one answers the same five questions. Each one sounds like themselves.</p>
+      <a class="btn" href="episodes.html">Listen to the latest episode</a>
+      <a class="btn ghost" href="figures.html" style="margin-left:12px">Meet the 45 figures</a>
+    </div>
+    <img src="assets/hero.jpg" alt="Cape Cod dunes at dusk — Historical Conversations">
+  </div>
+</div>
+
+<section class="band paper">
+  <div class="wrap">
+    <p class="kicker">Latest Episode</p>
+    <h2>The Signal from the Bluff — Guglielmo Marconi</h2>
+    <p class="text" style="margin-top:16px">In 1903, the first transatlantic wireless message ever sent from America left a crumbling bluff in South Wellfleet. The man who built the towers tells you what it cost.</p>
+    <div class="divider"></div>
+    <div class="cards" id="latest"></div>
+  </div>
+</section>
+
+<section class="band dark">
+  <div class="wrap">
+    <p class="kicker">The Format</p>
+    <h2>Five questions. Every figure. Four centuries.</h2>
+    <p style="margin-top:16px;max-width:62ch;color:#cfcabe">Every figure in this series answers the same five questions. Hear Thoreau answer them, then Marconi, then a pirate captain — and Cape Cod starts to show you itself from angles no guidebook can.</p>
+    <ol class="qs" id="five-qs"></ol>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="kicker">The Figures</p>
+    <h2>45 lives. One peninsula. A thousand years.</h2>
+    <p class="text" style="margin-top:16px">From the Wampanoag sachems to the president who protected the great beach — explore every figure by era, town, and theme.</p>
+    <div class="fig-grid" id="fig-teaser"></div>
+    <p style="margin-top:30px"><a class="btn" href="figures.html">Explore all figures</a></p>
+  </div>
+</section>
+
+<section class="band paper">
+  <div class="wrap" style="display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center" id="signup-grid">
+    <div>
+      <p class="kicker">Stay close to the story</p>
+      <h2>Walk the Outer Beach with Thoreau</h2>
+      <p style="margin-top:14px;max-width:52ch">One email a month when a new figure speaks, plus the free companion audio guide to Thoreau's outer beach route. No noise. No spam.</p>
+      <form class="signup" onsubmit="event.preventDefault();this.innerHTML='<p style=\'color:var(--hc-marsh);font-weight:600\'>Thank you — check your inbox. (Kit integration connects here.)</p>'">
+        <input type="email" required placeholder="Your email address">
+        <button class="btn" type="submit">Subscribe</button>
+      </form>
+    </div>
+    <img src="assets/cover.jpg" alt="Historical Conversations series artwork">
+  </div>
+</section>
+
+<div id="hc-footer"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  // latest three episodes with pages, newest first
+  const order=["EP-04","EP-02","EP-01"];
+  document.getElementById("latest").innerHTML =
+    order.map(id=>epCard(HC.figures.find(f=>f.ep===id))).join("");
+  document.getElementById("five-qs").innerHTML =
+    HC.questions.map(q=>`<li>${q}</li>`).join("");
+  // figure teaser: one per category, prefer published
+  const teaser=[];
+  for(const c of HC.categories.slice(0,4)){
+    const fs=HC.figures.filter(f=>f.category===c);
+    teaser.push(fs.find(f=>f.status==="published")||fs[0]);
+  }
+  document.getElementById("fig-teaser").innerHTML = teaser.map(figCard).join("");
+  if(window.innerWidth<820){document.getElementById("signup-grid").style.gridTemplateColumns="1fr";}
+});
+</script>
+</body>
+</html>
+
