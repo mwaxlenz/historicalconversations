@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Episodes — Historical Conversations: Cape Cod</title>
+<link rel="stylesheet" href="style.css">
+<script src="data.js"></script><script src="app.js"></script>
+</head>
+<body>
+<div id="hc-header" data-active="Episodes"></div>
+
+<section class="band">
+  <div class="wrap">
+    <p class="kicker">The Series</p>
+    <h1>Episodes</h1>
+    <p class="text" style="margin-top:16px">One figure, one place, one era — every month. Episodes marked “Planned” are in the production pipeline; the full Season&nbsp;1 roster runs through twelve figures.</p>
+    <div class="filters" id="status-filters">
+      <button class="on" data-f="all">All</button>
+      <button data-f="published">Published</button>
+      <button data-f="pipeline">In the pipeline</button>
+    </div>
+    <div class="cards" id="ep-cards" style="margin-top:30px"></div>
+  </div>
+</section>
+
+<div id="hc-footer"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const seq=["EP-04","EP-02","EP-01","EP-03","EP-05","EP-06","EP-07","EP-08","EP-09","EP-10","EP-11","EP-12"];
+  const figs=seq.map(id=>HC.figures.find(f=>f.ep===id)).filter(Boolean);
+  const render=mode=>{
+    const list=figs.filter(f=> mode==="all" ? true : mode==="published" ? f.status==="published" : f.status!=="published");
+    document.getElementById("ep-cards").innerHTML=list.map(epCard).join("");
+  };
+  render("all");
+  document.querySelectorAll("#status-filters button").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll("#status-filters button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); render(b.dataset.f);
+  });
+});
+</script>
+</body>
+</html>
+
